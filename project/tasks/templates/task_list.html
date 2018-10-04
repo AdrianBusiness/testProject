@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load bootstrap3 %}
+
+{% block title %}
+    Task list
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="panel panel-default">
+                {% if request.user.is_authenticated %}
+                    <a href="{% url 'create-task' %}" class="btn btn-success">Add New Task</a>
+                {% endif %}
+                <a href="?hide=true" class="btn btn-default">Hide Completed Tasks</a>
+                <a href="{% url 'task_list' %}" class="btn btn-default">Show All Tasks</a>
+            </div>
+        </div>
+        <div class="col-xs-12">
+            {% for task in task_list %}
+                <div class="panel panel-{% if task.completed %}success{% else %}info{% endif %}">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">{% if task.completed %}<span class="glyphicon glyphicon-ok"></span>{% endif %} {{ task.title }}</h3>
+                    </div>
+                    <div class="panel-body">
+                        <p>{{ task.description|safe }}</p>
+                    </div>
+                    <div class="panel-footer">
+                    <p>
+                        <small>Opened by {{ task.opened.username }}</small>
+                        {% if task.closed %} <small>Closed by {{ task.closed.username }}</small>{% endif %}
+                    </p>
+                        {% if request.user == task.opened %}
+                            <a href="{% url 'edit-task' task.pk %}">Edit</a>
+                            <a href="{% url 'delete-task' task.pk %}">Delete</a>
+                        {% endif %}
+                        {% if request.user.is_authenticated and not task.closed %}<a href="{% url 'mark_done' task.pk %}">Mark Done</a>{% endif %}
+                    </div>
+                </div>
+            {% empty %}
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <h3>Info</h3>
+                    </div>
+                    <div class="panel-body">
+                        <p>There are not any task in the list</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+

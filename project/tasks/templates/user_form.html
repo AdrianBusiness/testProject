@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load bootstrap3 %}
+
+{% block title %}
+    Login form
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-xs-12 text-center">
+            <h1>{% if 'login' in request.path %}Login{% elif 'sign-in' in request.path %}Sign in{% endif %}</h1>
+        </div>
+        <div class="col-xs-8 col-xs-push-2">
+            <form action="" method="post">
+                {% csrf_token %}
+                {%  bootstrap_form form %}
+                <button class="btn btn-primary" type="submit">{% if 'login' in request.path %}Login{% elif 'sign-in' in request.path %}Sign in{% endif %}</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
